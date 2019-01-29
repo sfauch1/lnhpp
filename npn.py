@@ -20,8 +20,7 @@ def execute(*args):
         filename = download_file(arg)
         data = parse_json_file(filename)
         write_to_csv(data, arg)
-        insert_to_db(arg)
-
+        
 
 def download_file(language):
     filename = json_file % {'language': language, 'timestamp': st}
