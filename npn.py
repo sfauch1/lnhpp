@@ -12,6 +12,7 @@ st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
 
 
 def main():
+    print('Starting process...')
     execute('fr', 'en')
 
 
@@ -20,22 +21,26 @@ def execute(*args):
         filename = download_file(arg)
         data = parse_json_file(filename)
         write_to_csv(data, arg)
-        
+
 
 def download_file(language):
+    print('Downloading %(language)s file' % {'language': language})
     filename = json_file % {'language': language, 'timestamp': st}
     urllib.request.urlretrieve(url % {'language': language}, filename)
     return filename
 
 
 def parse_json_file(filename):
+    print('Parsing JSON file -> %(file)s' % {'file': filename})
     with open(filename) as json_data:
         data = json.load(json_data)
         return data
 
 
 def write_to_csv(data, language):
-    csv_data = open(csv_file % {'language': language, 'timestamp': st}, 'w')
+    filename = csv_file % {'language': language, 'timestamp': st}
+    print('Writing JSON data to -> %(file)s' % {'file': filename})
+    csv_data = open(filename, 'w')
 
     csvwriter = csv.writer(csv_data)
 
