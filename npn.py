@@ -3,10 +3,11 @@ import time
 import datetime
 import json
 import csv
+import os
 
 url = 'https://health-products.canada.ca/api/natural-licences/productlicence/?lang=%(language)s&type=json'
-json_file = 'files/npn_%(language)s_%(timestamp)s.json'
-csv_file = 'files/npn_%(language)s_%(timestamp)s.csv'
+json_file = os.path.join('files', 'npn_%(language)s_%(timestamp)s.json')
+csv_file = os.path.join('files', 'npn_%(language)s_%(timestamp)s.csv')
 ts = time.time()
 st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
 
