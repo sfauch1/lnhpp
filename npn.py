@@ -8,7 +8,7 @@ from pathlib import Path
 
 config = None
 
-# test slack notification
+
 def main():
     get_config()
     execute('fr', 'en')
