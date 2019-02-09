@@ -3,18 +3,20 @@ import time
 import datetime
 import json
 import csv
-import os
+import yaml
+from pathlib import Path
 
-url = 'https://health-products.canada.ca/api/natural-licences/productlicence/?lang=%(language)s&type=json'
-json_file = os.path.join('files', 'npn_%(language)s_%(timestamp)s.json')
-csv_file = os.path.join('files', 'npn_%(language)s_%(timestamp)s.csv')
-ts = time.time()
-st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+config = None
 
 
 def main():
-    print('Starting process...')
+    get_config()
     execute('fr', 'en')
+
+
+def get_config():
+    global config
+    config = yaml.safe_load(open('config.yml'))
 
 
 def execute(*args):
@@ -25,23 +27,31 @@ def execute(*args):
 
 
 def download_file(language):
-    print('Downloading %(language)s file' % {'language': language})
-    filename = json_file % {'language': language, 'timestamp': st}
-    urllib.request.urlretrieve(url % {'language': language}, filename)
-    return filename
+    json_file = Path(config['files']['output_directory']).joinpath(
+        config['files']['json_file'] % {'language': language, 'timestamp': get_timestamp()})
+    print('Downloading %(language)s data to %(output)s' % {'language': language, 'output': json_file})
+    urllib.request.urlretrieve(config['url'] % {'language': language}, json_file.as_posix())
+    return json_file
 
 
 def parse_json_file(filename):
-    print('Parsing JSON file -> %(file)s' % {'file': filename})
-    with open(filename) as json_data:
+    print('Parsing JSON file :  %(file)s' % {'file': filename})
+    with Path.open(filename) as json_data:
         data = json.load(json_data)
         return data
 
 
+def get_timestamp():
+    ts = time.time()
+    st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+    return st
+
+
 def write_to_csv(data, language):
-    filename = csv_file % {'language': language, 'timestamp': st}
-    print('Writing JSON data to -> %(file)s' % {'file': filename})
-    csv_data = open(filename, 'w')
+    csv_file = Path(config['files']['output_directory']).joinpath(
+        config['files']['csv_file'] % {'language': language, 'timestamp': get_timestamp()})
+    print('Writing JSON data to : %(file)s' % {'file': csv_file})
+    csv_data = Path.open(csv_file, 'w')
 
     csvwriter = csv.writer(csv_data)
 
@@ -59,7 +69,7 @@ def write_to_csv(data, language):
         csvwriter.writerow(npn.values())
 
     csv_data.close()
-    
+
 
 if __name__ == '__main__':
     main()
