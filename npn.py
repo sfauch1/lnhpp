@@ -15,11 +15,15 @@ def main():
 
 
 def get_config():
+    """Read configuration from YAML file"""
+
     global config
     config = yaml.safe_load(open('config.yml'))
 
 
 def execute(*args):
+    """Iterate over each languages and execute functions"""
+
     for arg in args:
         filename = download_file(arg)
         data = parse_json_file(filename)
@@ -27,6 +31,8 @@ def execute(*args):
 
 
 def download_file(language):
+    """Download JSON gitfile for specified language"""
+
     json_file = Path(config['files']['output_directory']).joinpath(
         config['files']['json_file'] % {'language': language, 'timestamp': get_timestamp()})
     print('Downloading %(language)s data to %(output)s' % {'language': language, 'output': json_file})
@@ -35,6 +41,8 @@ def download_file(language):
 
 
 def parse_json_file(filename):
+    """Parse JSON file and return data to caller"""
+
     print('Parsing JSON file :  %(file)s' % {'file': filename})
     with Path.open(filename) as json_data:
         data = json.load(json_data)
@@ -42,12 +50,16 @@ def parse_json_file(filename):
 
 
 def get_timestamp():
+    """Get current time as string"""
+
     ts = time.time()
     st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
     return st
 
 
 def write_to_csv(data, language):
+    """Write parsed data from JSON file to CSV for specified language"""
+
     csv_file = Path(config['files']['output_directory']).joinpath(
         config['files']['csv_file'] % {'language': language, 'timestamp': get_timestamp()})
     print('Writing JSON data to : %(file)s' % {'file': csv_file})
