@@ -1,10 +1,10 @@
 url: https://health-products.canada.ca/api/natural-licences/productlicence/?lang=%(language)s&type=json
 
 mysql:
-    host: localhost
+    host: host_name
     user: user
     password: password
-    db: db
+    db: db_name
 
 files:
     output_directory : files
