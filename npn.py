@@ -31,7 +31,7 @@ def execute(*args):
 
 
 def download_file(language):
-    """Download JSON gitfile for specified language"""
+    """Download JSON file for specified language"""
 
     json_file = Path(config['files']['output_directory']).joinpath(
         config['files']['json_file'] % {'language': language, 'timestamp': get_timestamp()})
