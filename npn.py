@@ -5,6 +5,7 @@ import json
 import csv
 import yaml
 from pathlib import Path
+import MySQLdb
 
 config = None
 
@@ -27,7 +28,8 @@ def execute(*args):
     for arg in args:
         filename = download_file(arg)
         data = parse_json_file(filename)
-        write_to_csv(data, arg)
+        csv_file = write_to_csv(data, arg)
+    # write_to_db('npn_fr_2019-02-10 08:37:34.csv')
 
 
 def download_file(language):
@@ -78,9 +80,30 @@ def write_to_csv(data, language):
 
             count += 1
 
-        csvwriter.writerow(npn.values())
+        csvwriter.writerow([npn])
 
     csv_data.close()
+    return csv_file
+
+
+def write_to_db(csv_file):
+    connection = MySQLdb.connect(host=config['mysql']['host'], user=config['mysql']['user'],
+                                 passwd=config['mysql']['password'], db=config['mysql']['db'])
+
+    cursor = connection.cursor()
+
+    query = """LOAD DATA LOCAL INFILE '""" + Path(config['files']['output_directory']).joinpath(csv_file).as_posix() + """'
+    INTO TABLE product_license
+    CHARACTER SET 'latin1'
+    FIELDS TERMINATED BY ','
+    LINES TERMINATED BY '\n'
+    IGNORE 1 LINES
+    (
+        licence_date
+    )"""
+
+    cursor.execute(query)
+    connection.commit()
 
 
 if __name__ == '__main__':
