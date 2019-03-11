@@ -1,12 +1,31 @@
-url: https://health-products.canada.ca/api/natural-licences/productlicence/?lang=%(language)s&type=json
+categories:
+#    - medicinal_ingredient
+    - non_medicinal_ingredient
+    - product_dose
+    - product_license
+#    - product_purpose
+#    - product_risk
+    - product_route
+
+files:
+    output_directory : files
+    medicinal_ingredient:
+        url: https://health-products.canada.ca/api/natural-licences/medicinalingredient/?lang=%(language)s&type=json
+    non_medicinal_ingredient:
+        url: https://health-products.canada.ca/api/natural-licences/nonmedicinalingredient/?lang=%(language)s&type=json
+    product_dose:
+        url: https://health-products.canada.ca/api/natural-licences/productdose/?lang=%(language)s&type=json
+    product_license:
+        url: https://health-products.canada.ca/api/natural-licences/productlicence/?lang=%(language)s&type=json
+    product_purpose:
+        url: https://health-products.canada.ca/api/natural-licences/productpurpose/?lang=%(language)s&type=json
+    product_risk:
+        url: https://health-products.canada.ca/api/natural-licences/productrisk/?lang=%(language)s&type=json
+    product_route:
+        url: https://health-products.canada.ca/api/natural-licences/productroute/?lang=%(language)s&type=json
 
 mysql:
     host: host_name
     user: user
     password: password
     db: db_name
-
-files:
-    output_directory : files
-    json_file : npn_%(language)s_%(timestamp)s.json
-    csv_file : npn_%(language)s_%(timestamp)s.csv
