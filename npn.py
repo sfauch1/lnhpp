@@ -89,21 +89,13 @@ def write_to_csv(data, language, category):
                                                                              'file': csv_file})
 
     csv_data = Path.open(csv_file, 'w')
-
     csvwriter = csv.writer(csv_data, delimiter='\t')
-
     count = 0
-
     for npn in data:
-
         if count == 0:
-
             header = npn.keys()
-
             csvwriter.writerow(header)
-
             count += 1
-
         csvwriter.writerow(npn.values())
 
     csv_data.close()
